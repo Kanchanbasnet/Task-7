@@ -175,6 +175,35 @@
  *       500:
  *         description: Internal Server Error.
  */
+/**
+ * @swagger
+ * /products/search:
+ *      get:
+ *          summary: Search for products based on Keywords.
+ *          description: A search functionality that allows the users to search for products based on keywords.
+ *          tags: [Products]
+ *          parameters:
+ *              - in: query
+ *                name: keyword
+ *                required: true
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                  description: A keyword to search for products
+ *          responses:
+ *              200: 
+ *                  description: A list of results that matches the keyword.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/Product'
+ *              404: 
+ *                  description: Product not found that matches the keyword.
+ *              500:
+ *                  description: Internal Server Error.     
+ *                 
+ * 
+ */
 
 /**
  * @swagger

@@ -1,5 +1,5 @@
 const express = require('express');
-const {getProducts,getProductById, outOfStock,createProduct, updateQuantity, updateProduct, deleteProduct  } = require('../modules/Product/product.Controller');
+const {getProducts,getProductById, outOfStock,createProduct, updateQuantity, updateProduct, deleteProduct, searchProducts  } = require('../modules/Product/product.Controller');
 
 const router = express.Router()
 const multer = require('multer');
@@ -21,6 +21,7 @@ const upload = multer({ storage: storage });
 
 router.post('/create', upload.single('product_image'), createProduct);
 router.get('/', getProducts);
+router.get('/search', searchProducts);
 router.get('/outOfStock',outOfStock);
 router.get('/:id',getProductById);
 router.patch('/updateQuantity/:id',updateQuantity);

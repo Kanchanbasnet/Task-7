@@ -70,7 +70,7 @@ exports.deleteUser = (req,res)=>{
             res.status(404).send('User doesnot exists')
         }
         else{
-            pool.query(queries.deleteUser, [id], (deleteError, deleteResults)=>{
+            pool.query(queries.deleteUser, [id], (deleteError)=>{
                 if(deleteError){
                     throw deleteError
                 }

@@ -27,6 +27,26 @@ exports.getProductById =  (req, res)=>{
 
 }
 
+exports.searchProducts = (req, res) => {
+    const { keyword } = req.query;
+    if (!keyword) {
+        res.status(400).json({ error: 'Keyword is required.' });
+    } else {
+        pool.query(queries.searchProducts, [keyword], (error, results) => {
+            if (error) {
+                console.error(error);
+                res.status(500).json({ error: 'An error occurred while searching for products.' });
+            } else {
+                if (results.rows.length === 0) {
+                    res.status(404).json(`No results found for the keyword "${keyword}".`);
+                } else {
+                    res.status(200).json(results.rows);
+                }
+            }
+        });
+    }
+}
+
 exports.outOfStock = (req,res)=>{
     pool.query(queries.outOfStock, (error, results)=>{
         if(error){

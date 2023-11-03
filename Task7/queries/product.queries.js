@@ -6,3 +6,4 @@ exports.createProduct = "INSERT INTO products (product_name, description, price,
 exports.updateQuantity = "UPDATE products SET quantity = $1 WHERE product_id = $2"
 exports.updateProduct = "UPDATE products SET product_name = $1, description = $2, price = $3, quantity = $4, product_type = $5, product_image = $6 WHERE product_id = $7"
 exports.deleteProduct = "DELETE  FROM products WHERE product_id = $1"
+exports.searchProducts = "SELECT *FROM products WHERE to_tsvector(coalesce(product_name, '') || ' ' ||coalesce(product_type, '') || ' ' || coalesce(description, '')) @@to_tsquery($1)";
