@@ -12,7 +12,7 @@ exports.getUsers = (req,res)=>{
 
 exports.getUserById = (req,res)=>{
     const id = parseInt(req.params.id);
-    pool.query(queries.getUserById, [id],(error, results)=>{
+    pool.query(queries.getUserById, [user_id],(error, results)=>{
         if (error){
             throw error;
         }

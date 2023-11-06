@@ -5,6 +5,7 @@ const swaggerDocs = require('swagger-jsdoc');
 const userRouter = require('./routes/user.Route');
 const productRouter = require('./routes/product.Route');
 const cartRouter = require('./routes/cart.Route');
+const orderRouter = require('./routes/order.Route');
 
 
 
@@ -37,4 +38,5 @@ const specs = swaggerDocs(options);
 app.use('/users',userRouter);
 app.use('/products', productRouter);
 app.use('/cart',cartRouter);
+app.use('/order',orderRouter);
 app.use('/docs',swaggerUI.serve, swaggerUI.setup(specs))
