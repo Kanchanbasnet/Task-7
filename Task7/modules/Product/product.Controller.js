@@ -27,25 +27,7 @@ exports.getProductById =  (req, res)=>{
 
 }
 
-exports.searchProducts = (req, res) => {
-    const { keyword } = req.query;
-    if (!keyword) {
-        res.status(400).json({ error: 'Keyword is required.' });
-    } else {
-        pool.query(queries.searchProducts, [keyword], (error, results) => {
-            if (error) {
-                console.error(error);
-                res.status(500).json({ error: 'An error occurred while searching for products.' });
-            } else {
-                if (results.rows.length === 0) {
-                    res.status(404).json(`No results found for the keyword "${keyword}".`);
-                } else {
-                    res.status(200).json(results.rows);
-                }
-            }
-        });
-    }
-}
+
 
 exports.outOfStock = (req,res)=>{
     pool.query(queries.outOfStock, (error, results)=>{
@@ -157,3 +139,57 @@ exports.deleteProduct =  (req,res) =>{
     })
 
 }
+// exports.searchProducts = (req, res) => {
+//     const { keyword } = req.query;
+//     if (!keyword) {
+//         res.status(400).json({ error: 'Keyword is required.' });
+//     } else {
+//         pool.query(queries.searchProducts, [keyword], (error, results) => {
+//             if (error) {
+//                 console.error(error);
+//                 res.status(500).json({ error: 'An error occurred while searching for products.' });
+//             } else {
+//                 if (results.rows.length === 0) {
+//                     res.status(404).json(`No results found for the keyword "${keyword}".`);
+//                 } else {
+//                     res.status(200).json(results.rows);
+//                 }
+//             }
+//         });
+//     }
+// }
+
+exports.searchProducts = async (req, res) => {
+    const query = req.query.name;
+    const keyword = `%${query}%`;
+    const queryText = "SELECT * FROM products WHERE product_name ILIKE $1 OR description ILIKE $1 OR product_type ILIKE $1;";
+    const { rows } = await pool.query(queryText, [keyword]);
+
+    if (rows.length === 0) {
+        res.status(404).json({ message: `No results found for the keyword "${query}".` });
+        return;
+    }
+
+    for (const row of rows) {
+        const searchHistory = "INSERT INTO search_tracking (product_id, keyword, search_date, search_count) VALUES ($1, $2, NOW(), 1) ON CONFLICT (product_id) DO UPDATE SET search_count = search_tracking.search_count + 1";
+        await pool.query(searchHistory, [row.product_id, query]);
+    }
+
+    res.status(200).json(rows);
+};
+
+exports.topTenProducts = async (req, res)=>{
+    const query = `
+      SELECT st.product_id, st.search_count, p.product_name, p.price, p.description, p.quantity, p.product_type
+      FROM search_tracking st
+      INNER JOIN products p ON st.product_id = p.product_id
+      ORDER BY st.search_count DESC
+      LIMIT 10;
+    `;
+    const { rows } = await pool.query(query);
+    res.status(200).json( rows );
+  } 
+
+
+
+  
