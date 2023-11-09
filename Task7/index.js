@@ -22,9 +22,9 @@ const options ={
     definition:{
      openapi:"3.0.0",
      info:{
-        title:"Ecommerce API",
+        title:"USER API",
         version:"1.0.0",
-        description:"This is the REST API application made with express. It is a simple Express Ecommerce API."
+        description:"This is the USER API application made with express. It is a simple Express USER API."
 
      },
      servers:[{

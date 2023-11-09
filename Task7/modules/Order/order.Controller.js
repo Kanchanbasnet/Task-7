@@ -163,4 +163,33 @@ exports.checkout = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+
+exports.getTopSellingProducts = async(req, res)=>{
+    try{
+      const query = `
+      SELECT
+        p.product_id,
+        p.product_name,
+        p.product_type,
+        SUM(oi.quantity) AS total_sold
+      FROM order_items oi
+      JOIN products p ON oi.product_id = p.product_id
+      GROUP BY p.product_id
+      ORDER BY total_sold DESC
+      LIMIT 10;
+    `;
+    const queryResult =await  pool.query(query);
+    if(queryResult.rows.length===0){
+      res.status(404).json({message: 'No top products Found.'});
+    }
+    res.status(200).json(queryResult.rows);
+
+    }
+    catch(error){
+      console.log(error);
+      res.status(500).send('Internal Server Error.')
+
+    }
+  }
+
   
